@@ -2,12 +2,12 @@ FROM centos:centos6
 
 MAINTAINER coleman <coleman_dlut@hotmail.com>
 
-ENV MYSQL_ROOT_PASSWD qzjqzj
+ENV MYSQL_ROOT_PASSWD password
 
 #************************************************************
 #*  Updateし、Mysqlをインストールする                       *
 #************************************************************
-RUN yum -y update && yum -y install mysql-server && yum clean all
+RUN yum -y update && yum -y install mysql-server expect && yum clean all
 
 #************************************************************
 #*  mysql_secure_installationを利用して、Mysqlを初期化する  *
