@@ -2,15 +2,37 @@ FROM centos:centos6
 
 MAINTAINER coleman <coleman_dlut@hotmail.com>
 
-#*************************
-#*  Update and Pre-Reqs  *
-#*************************
+ENV MYSQL_ROOT_PASSWD qzjqzj
+
+#************************************************************
+#*  Updateし、Mysqlをインストールする                       *
+#************************************************************
 RUN yum -y update && yum -y install mysql-server && yum clean all
 
+#************************************************************
+#*  mysql_secure_installationを利用して、Mysqlを初期化する  *
+#************************************************************
+RUN /etc/init.d/mysqld start && \
+expect -c "
+spawn /usr/bin/mysql_secure_installation
+expect \"(enter for none):\"
+send \"\r\"
+expect \"\[Y/n\]\"
+send \"Y\r\"
+expect \"New password:\"
+send \"$MYSQL_ROOT_PASSWD\r\"
+expect \"Re-enter new password:\"
+send \"$MYSQL_ROOT_PASSWD\r\"
+expect \"\[Y/n\]\"
+send \"Y\r\"
+expect \"\[Y/n\]\"
+send \"Y\r\"
+expect \"\[Y/n\]\"
+send \"Y\r\"
+" \
+&& /etc/init.d/mysqld stop
 
-
-
-VOLUME  ["/etc/mysql", "/var/lib/mysql"]
+VOLUME  ["/var/lib/mysql"]
 
 EXPOSE 3306
 
